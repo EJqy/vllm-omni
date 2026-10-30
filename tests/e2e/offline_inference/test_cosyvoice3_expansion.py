@@ -186,13 +186,6 @@ def test_cosyvoice3_offline_reference_zero_shot(omni_runner: OmniRunner) -> None
 
     duration_s = audio.size / sr
 
-    # 保存生成的音频
-    wav_path = Path.cwd() / "cosyvoice3_debug.wav"
-    sf.write(str(wav_path), audio, sr)
-
-    print(f"\nSaved audio to: {wav_path}")
-    print(f"Duration: {duration_s:.3f}s")
-
     # ROCm emits the same valid 9.08s waveform for both sync and async_chunk
     # paths. Keep the established CUDA bound while allowing that small,
     # deterministic backend variance in this cross-platform smoke check.
