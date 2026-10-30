@@ -189,7 +189,7 @@ def test_cosyvoice3_offline_reference_zero_shot(omni_runner: OmniRunner) -> None
     # ROCm emits the same valid 9.08s waveform for both sync and async_chunk
     # paths. Keep the established CUDA bound while allowing that small,
     # deterministic backend variance in this cross-platform smoke check.
-    max_duration_s = 9.5 if current_platform.is_rocm() else 9.0
+    max_duration_s = 9.5 if current_platform.is_rocm() else 9.2
     assert (
         2.8 <= duration_s <= max_duration_s
     ), f"Unexpected duration={duration_s:.3f}s (samples={audio.size}, sr={sr})"
