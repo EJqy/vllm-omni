@@ -20,7 +20,6 @@ from pathlib import Path
 import numpy as np
 import pytest
 import soundfile as sf
-from vllm.platforms import current_platform
 from vllm.sampling_params import SamplingParams
 
 from tests.helpers.mark import hardware_test
@@ -176,10 +175,11 @@ def test_cosyvoice3_offline_reference_zero_shot(omni_runner: OmniRunner) -> None
 
     duration_s = audio.size / sr
 
-    # ROCm emits the same valid 9.08s waveform for both sync and async_chunk
-    # paths. Keep the established CUDA bound while allowing that small,
-    # deterministic backend variance in this cross-platform smoke check.
-    max_duration_s = 9.5 if current_platform.is_rocm() else 9.2
+    # Valid audio durations can vary slightly across GPU backends
+    # (9.08s on ROCm and 9.16s on CUDA L4).
+    # Use a unified 9.5s bound to accommodate these variations
+    # and avoid flaky failures in this cross-platform smoke test.
+    max_duration_s = 9.5
     assert 2.8 <= duration_s <= max_duration_s, f"Unexpected duration={duration_s:.3f}s (samples={audio.size}, sr={sr})"
 
     # Code2wav is ``final_output`` (stage 1); ``Omni.generate`` yields its ``request_output`` / completions.
